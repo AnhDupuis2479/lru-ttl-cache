@@ -27,3 +27,10 @@ In-memory caches often need both a size limit and a freshness guarantee. A pure 
 - If `maxsize` is less than 1 or `ttl` is not positive, a `ValueError` is raised.
 - Expiry is inclusive: an entry expires when the clock reaches `insertion_time + ttl`.
 - `get` returns `None` for missing or expired entries; use the `default` parameter to distinguish.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
